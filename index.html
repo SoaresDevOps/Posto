@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senha|Servidor</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <form id="formulario">
+            <div class="form-group">
+                <label for="sala">Sala:</label>
+                <select class="form-control" id="sala" name="sala" required>
+                    <option value="" disabled selected>Selecione a Sala</option>
+                    <option value="Consultório Médico">Consultório Médico</option>
+                    <option value="Odontologia">Odontologia</option>
+                    <option value="Pré Consulta">Pré Consulta</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <input type="text" class="form-control" id="senha" name="senha" required>
+            </div>
+            <div class="form-group">
+                <label for="dr">Dr(a):</label>
+                <select class="form-control" id="dr" name="dr" required>
+                    <option value="" disabled selected>Selecione o Dr(a)</option>
+                    <option value="Jane">Jane</option>
+                    <option value="Osmair">Osmair</option>
+                    <option value="Arthur">Arthur</option>
+                    <option value="Andreia">Andreia</option>
+                    <option value="Luiz Alberto">Luiz Alberto</option> 
+                    <option value="Michele">Michele</option>
+                    <option value=" "> </option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-custom">Enviar</button>
+            <button id="reiniciarCampos" type="button" class="btn btn-custom">Reiniciar Campos</button>
+            <p><strong>Por-Favor, não esqueça de preencher tudo certo</strong></p>
+        </form>
+    </div>
+
+    <!-- Firebase App -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyADo8sESN4qCbumm7xN_xAMgUR0Y3aTlQg",
+            authDomain: "posto-de-saude-fatima.firebaseapp.com",
+            databaseURL: "https://posto-de-saude-fatima-default-rtdb.firebaseio.com",
+            projectId: "posto-de-saude-fatima",
+            storageBucket: "posto-de-saude-fatima.appspot.com",
+            messagingSenderId: "669579981901",
+            appId: "1:669579981901:web:234e7f087d813593019804",
+            measurementId: "G-6ZSXPQHV32"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+
+        document.getElementById('formulario').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const sala = document.getElementById('sala').value;
+            const senha = document.getElementById('senha').value;
+            const dr = document.getElementById('dr').value;
+
+            const dados = { sala, senha, dr };
+
+            // Envia os dados para o Firebase Realtime Database
+            const newRef = ref(database, 'senhas/' + Date.now());
+            set(newRef, dados)
+                .then(() => console.log('Dados enviados com sucesso'))
+                .catch((error) => console.error('Erro ao enviar dados:', error));
+        });
+
+        document.getElementById('reiniciarCampos').addEventListener('click', function() {
+            document.getElementById('sala').selectedIndex = 0;
+            document.getElementById('senha').value = '';
+            document.getElementById('dr').selectedIndex = 0;
+        });
+    </script>
+</body>
+</html>
